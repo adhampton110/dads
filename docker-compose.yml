@@ -6,11 +6,34 @@ services:
     env_file: .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data1
     ports:
-      - "5432:5432" 
+      - ${DB_PORT}:5432
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dads-backend:
+    build: ./backend
+    image: dads-backend-image:latest
+    container_name: dads-backend-container 
+    env_file: .env
+    environment:
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: dads-database-container
+      DB_PORT: ${DB_PORT}
+    ports: 
+      - "3000:3000"
+    depends_on:
+      - dads-database
 
 volumes:
   postgres_data:

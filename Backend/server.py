@@ -5,11 +5,17 @@ between frontend and backend
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from postgres_connector import PostgresConnector
+from os import environ
 
 app = Flask(__name__)
 CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000', '*'])
+dbname = environ.get("DB_NAME")
+user = environ.get("DB_USER")
+password = environ.get("DB_PASSWORD")
+host = environ.get("DB_HOST")
+port = environ.get("DB_PORT")
 
-connector = PostgresConnector()
+connector = PostgresConnector(dbname = dbname, user=user, password=password, host=host, port=port)
 
 
 # return all dynamical systems
