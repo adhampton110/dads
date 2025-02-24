@@ -7,15 +7,17 @@ from flask_cors import CORS
 from postgres_connector import PostgresConnector
 from os import environ
 
-app = Flask(__name__)
-CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000', '*'])
 dbname = environ.get("DB_NAME")
 user = environ.get("DB_USER")
 password = environ.get("DB_PASSWORD")
 host = environ.get("DB_HOST")
-port = environ.get("DB_PORT")
+db_port = environ.get("DB_PORT")
+frontend_port = environ.get("FRONTEND_PORT")
 
-connector = PostgresConnector(dbname = dbname, user=user, password=password, host=host, port=port)
+app = Flask(__name__)
+CORS(app, origins=[f"http://localhost:{frontend_port}", f"http://127.0.0.1:{frontend_port}", '*'])
+
+connector = PostgresConnector(dbname = dbname, user=user, password=password, host=host, port=db_port)
 
 
 # return all dynamical systems

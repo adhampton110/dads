@@ -30,10 +30,23 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_HOST: dads-database-container
       DB_PORT: ${DB_PORT}
+      FRONTEND_PORT: ${FRONTEND_PORT}
     ports: 
-      - "3000:3000"
+      - ${BACKEND_PORT}:5000
     depends_on:
       - dads-database
+  
+  dads-frontend:
+    build: ./frontend
+    image: dads-frontend-image:latest
+    container_name: dads-frontend-container
+    env_file: .env
+    environment:
+      BACKEND_PORT: ${BACKEND_PORT}
+    ports:
+      - ${FRONTEND_PORT}:3000
+    depends_on:
+      - dads-backend
 
 volumes:
   postgres_data:
